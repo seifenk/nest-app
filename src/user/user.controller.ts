@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Req,
+  Query,
   HttpException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -11,6 +12,7 @@ import { StudentService } from '@/student/student.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Msg } from '@/decorator/msg.decorator';
 import { PswDto } from './dto/user.dto';
+import { Public } from '@/guard/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -35,6 +37,7 @@ export class UserController {
     this.userService.updateOne(req.user.id, { password: body.newPsw });
   }
 
+  @Public()
   @Msg('注册成功')
   @Post('add')
   addOne(@Body() user: CreateUserDto) {
@@ -58,11 +61,14 @@ export class UserController {
     });
   }
 
+  @Public()
   @Get('getProfile')
-  async getProfile(@Req() req) {
-    const student = await this.studentService.findOne({
-      where: { user: req.user.id },
-    });
-    return student;
+  async getProfile(
+    @Req() req,
+    @Query('pageNum') pageNum,
+    @Query('pageSize') pageSize,
+  ) {
+    return await this.userService.findAllbyTest(pageNum, pageSize);
+    // return await this.studentService.findOne({ where: { user: req.user.id } });
   }
 }

@@ -18,10 +18,10 @@ import { ResInterceptor } from './interceptor/response.interceptor';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: '8.218.136.226',
       port: 3306,
-      username: 'root',
-      password: '12345678',
+      username: 'blogSys',
+      password: 'xTRr7shLc7LyEMBK',
       database: 'blogSys',
       entities: [],
       autoLoadEntities: true,
