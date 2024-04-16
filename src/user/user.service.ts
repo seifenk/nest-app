@@ -2,28 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { QueryUtils } from '@/repositories/select.repository';
+import PaginationService from '@/shared/helper/pagination';
 
 @Injectable()
 export class UserService {
-  private queryUtils: QueryUtils;
+  private paginationService: PaginationService<User>;
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {
-    this.queryUtils = new QueryUtils(this.userRepository);
+    this.paginationService = new PaginationService(this.userRepository);
   }
   async findAll(body) {
-    const { pageNum, pageSize, ...query } = body;
-    const result = await this.userRepository.findAndCount({
-      skip: (pageNum - 1) * pageSize,
-      take: pageSize,
-      where: query,
-    });
-    return {
-      total: result[1],
-      pageNum: pageNum,
-      data: result[0],
-    };
+    return this.paginationService.paginationResult(body);
   }
 
   findOneBy(body) {
@@ -40,9 +30,5 @@ export class UserService {
 
   updateOne(id, body) {
     this.userRepository.update(id, body);
-  }
-
-  findAllbyTest(start: number, pageSize: number) {
-    return this.queryUtils.findAllUser(start, pageSize);
   }
 }

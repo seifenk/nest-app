@@ -1,10 +1,10 @@
 import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 
-import { LocalAuthGuard } from './guard/local.guard';
-import { RolesGuard } from './guard/roles.guard';
-import { Roles } from './guard/roles.decorator';
-import { Public } from './guard/public.decorator';
+import { LocalAuthGuard } from './shared/guard/local.guard';
+import { RolesGuard } from './shared/guard/roles.guard';
+import { Roles } from './shared/decorator/roles.decorator';
+import { Public } from './shared/decorator/public.decorator';
 @Controller()
 export class AppController {
   constructor(private authService: AuthService) {}

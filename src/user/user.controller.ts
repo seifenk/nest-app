@@ -1,18 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Query,
-  HttpException,
-} from '@nestjs/common';
+import { Controller, Post, Body, Req, HttpException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { StudentService } from '@/student/student.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Msg } from '@/decorator/msg.decorator';
+import { Msg } from '@/shared/decorator/msg.decorator';
 import { PswDto } from './dto/user.dto';
-import { Public } from '@/guard/public.decorator';
+import { Public } from '@/shared/decorator/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -59,16 +51,5 @@ export class UserController {
     this.studentService.updateOne(student.id, {
       ...body,
     });
-  }
-
-  @Public()
-  @Get('getProfile')
-  async getProfile(
-    @Req() req,
-    @Query('pageNum') pageNum,
-    @Query('pageSize') pageSize,
-  ) {
-    return await this.userService.findAllbyTest(pageNum, pageSize);
-    // return await this.studentService.findOne({ where: { user: req.user.id } });
   }
 }
