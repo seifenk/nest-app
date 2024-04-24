@@ -13,8 +13,16 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './shared/guard/jwt.guard';
 import { ResInterceptor } from './shared/interceptor/response.interceptor';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { FileModule } from './file/file.module';
+
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads/',
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: '8.218.136.226',
@@ -24,6 +32,8 @@ import { ResInterceptor } from './shared/interceptor/response.interceptor';
       database: 'blogSys',
       entities: [],
       autoLoadEntities: true,
+      synchronize: false,
+      logging: true,
     }),
 
     UserModule,
@@ -39,6 +49,8 @@ import { ResInterceptor } from './shared/interceptor/response.interceptor';
     ClassModule,
 
     AuthModule,
+
+    FileModule,
   ],
   controllers: [AppController],
   providers: [

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
+import { PaginationService } from '@/shared/helper/pagination';
 @Injectable()
 export class StudentService {
   constructor(
@@ -14,29 +15,28 @@ export class StudentService {
   }
 
   async findAll(body) {
-    const { pageSize, pageNum, ...data } = body;
-    const result = await this.stuRepository.findAndCount({
-      skip: pageSize * (pageNum - 1),
-      take: pageSize,
-      where: data,
-    });
-    return {
-      data: result[0],
-      total: result[1],
+    const { pageNum, pageSize, ...where } = body;
+    return await PaginationService.paginate(this.stuRepository, {
       pageNum,
-    };
+      pageSize,
+      relations: ['class', 'user'],
+      where: where,
+    });
   }
 
   findOne(body) {
-    return this.stuRepository.findOne(body);
+    return this.stuRepository.findOne({
+      relations: ['class', 'user'],
+      where: body,
+    });
+  }
+
+  findOneBy(body) {
+    return this.stuRepository.findOneBy(body);
   }
 
   updateOne(id, body) {
     this.stuRepository.update(id, body);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} student`;
   }
 
   save(stu) {

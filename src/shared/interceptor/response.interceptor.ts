@@ -8,6 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Msg } from '@/shared/decorator/msg.decorator';
+import { Request, Response } from 'express';
 @Injectable()
 export class ResInterceptor implements NestInterceptor {
   constructor(private reflector: Reflector) {}
@@ -17,7 +18,9 @@ export class ResInterceptor implements NestInterceptor {
     const request = ctx.switchToHttp().getRequest<Request>();
     const response = ctx.switchToHttp().getResponse<Response>();
     if (request.method === 'POST') {
-      if (response.status === 201) ctx.switchToHttp().getResponse().status(200);
+      if (response.statusCode === 201) {
+        response.status(200);
+      }
     }
     return next.handle().pipe(
       map((data) => {

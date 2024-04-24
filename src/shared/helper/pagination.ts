@@ -1,21 +1,35 @@
 import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 
-class PaginationService<T> {
+@Injectable()
+export class PaginationService<T> {
   constructor(private repository: Repository<T>) {}
-
-  async paginationResult(body) {
-    const { pageNum = 1, pageSize = 10, ...query } = body;
-    const result = await this.repository.findAndCount({
+  static async paginate<T>(
+    repository: Repository<T>,
+    { pageNum = 1, pageSize = 10, ...options },
+  ) {
+    const [list, total] = await repository.findAndCount({
       skip: (pageNum - 1) * pageSize,
       take: pageSize,
-      where: query,
+      ...options,
     });
     return {
-      total: result[1],
+      total,
       pageNum: pageNum,
-      data: result[0],
+      data: list,
+    };
+  }
+  static async paginateBy<T>(repository: Repository<T>, data) {
+    const { pageNum = 1, pageSize = 10, ...where } = data;
+    const [list, total] = await repository.findAndCount({
+      skip: (pageNum - 1) * pageSize,
+      take: pageSize,
+      where: where,
+    });
+    return {
+      total,
+      pageNum: pageNum,
+      data: list,
     };
   }
 }
-
-export default PaginationService;

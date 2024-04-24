@@ -6,7 +6,7 @@ import { TypeormFilter } from './shared/filter/typeorm.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter(), new TypeormFilter());
   app.enableCors();
   await app.listen(3010);
