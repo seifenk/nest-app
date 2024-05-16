@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { File } from './entities/file.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -28,6 +28,39 @@ export class FileService {
       };
       await this.fileRepository.save(one);
       return path.substring(1);
+    }
+  }
+
+  createChunk(file, body) {
+    const { hash, index, name } = body;
+    fs.mkdirSync(`./uploads/chunks_${name}`, { recursive: true });
+    const myHash = crypto.createHash('md5').update(file.buffer).digest('hex');
+    if (myHash !== hash)
+      throw new HttpException('文件校验失败,请重新上传', 400);
+    const path = `./uploads/chunks_${name}/${name}-${index}`;
+    fs.writeFileSync(path, file.buffer);
+    return `文件${name},${index}上传成功`;
+  }
+
+  mergeChunk(body) {
+    const { name } = body;
+
+    const files = fs.readdirSync(`./uploads/chunks_${name}`);
+    files.sort((a, b) => {
+      return Number(a.split('-').pop()) - Number(b.split('-').pop());
+    });
+
+    let pos = 0;
+    for (const file of files) {
+      const writestream = fs.createWriteStream(`./uploads/${name}`, {
+        start: pos,
+      });
+      const readstream = fs.createReadStream(
+        `./uploads/chunks_${name}/${file}`,
+      );
+
+      readstream.pipe(writestream, { end: true });
+      pos += fs.statSync(`./uploads/chunks_${name}/${file}`).size;
     }
   }
 
