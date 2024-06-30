@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserModule } from '@/user/user.module';
+import { StuModule } from '@/stuApp/stu.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
@@ -9,7 +9,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 @Module({
   imports: [
-    UserModule,
+    StuModule,
     PassportModule,
     JwtModule.register({
       global: true,

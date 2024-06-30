@@ -2,13 +2,8 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
-import { TeacherModule } from './teacher/teacher.module';
+import { StuModule } from './stuApp/stu.module';
 import { LoggerMiddleware } from './shared/middleware/logger';
-import { CourseModule } from './course/course.module';
-import { StudentModule } from './student/student.module';
-import { SubjectModule } from './subject/subject.module';
-import { ClassModule } from './class/class.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './shared/guard/jwt.guard';
@@ -36,17 +31,7 @@ import { FileModule } from './file/file.module';
       logging: true,
     }),
 
-    UserModule,
-
-    TeacherModule,
-
-    CourseModule,
-
-    SubjectModule,
-
-    StudentModule,
-
-    ClassModule,
+    StuModule,
 
     AuthModule,
 
