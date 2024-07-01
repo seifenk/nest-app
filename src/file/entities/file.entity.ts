@@ -2,7 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class File {
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   hashId: string;
   @Column()
   originalname: string;
@@ -10,7 +10,7 @@ export class File {
   size: number;
   @Column()
   mimetype: string;
-  @Column()
+  @Column({ unique: true })
   path: string;
   @CreateDateColumn()
   createTime: Date;

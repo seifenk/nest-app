@@ -1,9 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
-
-@Injectable()
-export class PaginationService<T> {
-  constructor(private repository: Repository<T>) {}
+export class Pagination {
   static async paginate<T>(
     repository: Repository<T>,
     { pageNum = 1, pageSize = 10, ...options },
@@ -32,4 +28,9 @@ export class PaginationService<T> {
       data: list,
     };
   }
+}
+//分页助手注入全局变量
+global.PageHelper = Pagination;
+declare global {
+  var PageHelper: typeof Pagination;
 }

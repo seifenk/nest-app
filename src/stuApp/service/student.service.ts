@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from '../entities/student.entity';
-import { PaginationService } from '@/shared/helper/pagination';
+
 @Injectable()
 export class StudentService {
   constructor(
@@ -16,7 +16,7 @@ export class StudentService {
 
   async findAll(body) {
     const { pageNum, pageSize, ...where } = body;
-    return await PaginationService.paginate(this.stuRepository, {
+    return await PageHelper.paginate(this.stuRepository, {
       pageNum,
       pageSize,
       relations: ['class', 'user'],
