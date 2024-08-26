@@ -11,31 +11,56 @@ import { ResInterceptor } from './shared/interceptor/response.interceptor';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FileModule } from './file/file.module';
+import { OkyModule } from './okxApp/oky.module';
+import { AbcModule } from './abc/abc.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule } from '@nestjs/config';
+
+const envFilePath = `.env.${process.env.NODE_ENV || `dev`}`;
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [envFilePath, '.env'],
+    }),
+    ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads/',
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '8.218.136.226',
+      host: 'localhost',
       port: 3306,
-      username: 'blogSys',
-      password: 'xTRr7shLc7LyEMBK',
+      username: 'root',
+      password: process.env.DB_PSW,
       database: 'blogSys',
       entities: [],
       autoLoadEntities: true,
       synchronize: false,
-      logging: true,
+      logging: false,
     }),
-
+    TypeOrmModule.forRoot({
+      name: 'okx',
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: process.env.DB_PSW,
+      database: 'okx',
+      entities: [],
+      autoLoadEntities: true,
+      synchronize: true,
+      logging: false,
+    }),
     StuModule,
 
     AuthModule,
 
     FileModule,
+    OkyModule,
+    AbcModule,
   ],
   controllers: [AppController],
   providers: [

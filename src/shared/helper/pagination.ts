@@ -32,5 +32,6 @@ export class Pagination {
 //分页助手注入全局变量
 global.PageHelper = Pagination;
 declare global {
+  // eslint-disable-next-line no-var
   var PageHelper: typeof Pagination;
 }
